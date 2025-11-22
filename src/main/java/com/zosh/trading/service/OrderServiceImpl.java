@@ -27,7 +27,7 @@ public class OrderServiceImpl implements OrderService{
     private OrderItemRepository orderItemRepository;
 
     @Autowired
-    private AssetService assetService
+    private AssetService assetService;
 
 
     @Override

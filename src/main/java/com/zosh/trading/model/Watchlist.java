@@ -20,7 +20,8 @@ public class Watchlist {
     private User user;
 
 
-    @ManyToOne
+    @ManyToMany
+    @ElementCollection
     private List<Coin> coins = new ArrayList<>();
 
 

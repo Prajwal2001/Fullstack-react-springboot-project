@@ -17,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,6 +36,11 @@ public class AuthController {
     @Autowired ( required = true)
     private EmailService emailService;
 
+
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> register(@RequestBody User user) throws Exception {
 
@@ -48,8 +54,13 @@ public class AuthController {
         User newUser = new User();
         newUser.setFullName(user.getFullName());
         newUser.setEmail(user.getEmail());
-        newUser.setPassword(user.getPassword());
-        newUser.setEmail(user.getEmail()); // example field
+        //  FIX: Encode the password before setting it
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        newUser.setPassword(encodedPassword);
+//        newUser.setPassword(user.getPassword());
+
+
+
 
         User savedUser = userRepository.save(newUser);
 
@@ -134,11 +145,20 @@ public class AuthController {
 
             throw new BadCredentialsException("invalid username");
         }
-        if (!password.equals(userDetails.getPassword())){
+//        if (!password.equals(userDetails.getPassword())){
+//            throw new BadCredentialsException("invalid password");
+//        }
+        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("invalid password");
         }
 
-        return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+//        return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+
+        return new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities()
+        );
 
     }
 

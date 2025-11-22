@@ -1,14 +1,9 @@
 package com.zosh.trading.controller;
 
 
-import com.zosh.trading.model.Order;
-import com.zosh.trading.model.User;
-import com.zosh.trading.model.Wallet;
-import com.zosh.trading.model.WalletTransaction;
-import com.zosh.trading.service.OrderService;
-import com.zosh.trading.service.OrderServiceImpl;
-import com.zosh.trading.service.UserService;
-import com.zosh.trading.service.WalletService;
+import com.zosh.trading.model.*;
+import com.zosh.trading.response.PaymentResponse;
+import com.zosh.trading.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +22,9 @@ public class WalletController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private PaymentService paymentService;
 
 
 
@@ -72,6 +70,32 @@ public class WalletController {
         Wallet wallet = walletService.payorderPayment(order, user);
 
 
+
+
+        return  new ResponseEntity<>(wallet, HttpStatus.ACCEPTED);
+    }
+
+
+    @PutMapping("/api/wallet/deposit/{orderId}/pay")
+    public ResponseEntity<Wallet> addBalanceToWallet (
+            @RequestHeader("Authorization") String jwt,
+            @RequestParam(name = "order_id") Long orderId,
+            @RequestParam(name = "payment_id") String paymentId
+
+    ) throws  Exception{
+
+        User user = userService.findUserProfileByJwt(jwt);
+
+       Wallet wallet = walletService.getUserWallet( user);
+
+        PaymentOrder order = paymentService.getPaymentOrderById(orderId);
+
+        Boolean status = paymentService.proceedPaymentOrder(order,paymentId);
+
+       if (status){
+
+           wallet = walletService.addBalance(wallet, order.getAmount());
+       }
 
 
         return  new ResponseEntity<>(wallet, HttpStatus.ACCEPTED);

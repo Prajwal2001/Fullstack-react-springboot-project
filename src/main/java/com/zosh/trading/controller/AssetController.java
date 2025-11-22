@@ -11,40 +11,38 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api/assets")   //  FIXED: Added base mapping to avoid "/" conflicts
 public class AssetController {
 
     @Autowired
-    private  AssetService assetService;
-
+    private AssetService assetService;
 
     @Autowired
     private UserService userService;
 
-
-
-    @GetMapping("/{assetId}")
+    @GetMapping("/{assetId}")    // Now maps to /api/assets/{assetId}
     public ResponseEntity<Asset> getAssetById(@PathVariable Long assetId) throws Exception {
         Asset asset = assetService.getAssetById(assetId);
         return ResponseEntity.ok().body(asset);
     }
 
-    @GetMapping("/coin/{coinId}/user")
+    @GetMapping("/coin/{coinId}/user")  // /api/assets/coin/{coinId}/user
     public ResponseEntity<Asset> getAssetByUserIdAndCoinId(
             @PathVariable String coinId,
             @RequestHeader("Authorization") String jwt
     ) throws Exception {
 
-        User user=userService.findUserProfileByJwt(jwt);
+        User user = userService.findUserProfileByJwt(jwt);
         Asset asset = assetService.findAssetByUserIdAndCoinId(user.getId(), coinId);
         return ResponseEntity.ok().body(asset);
     }
 
-    @GetMapping()
+    @GetMapping()    // /api/assets
     public ResponseEntity<List<Asset>> getAssetsForUser(
             @RequestHeader("Authorization") String jwt
     ) throws Exception {
-        User user=userService.findUserProfileByJwt(jwt);
+
+        User user = userService.findUserProfileByJwt(jwt);
         List<Asset> assets = assetService.getUsersAssets(user.getId());
         return ResponseEntity.ok().body(assets);
     }

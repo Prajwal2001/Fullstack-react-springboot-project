@@ -91,7 +91,7 @@ public class CoinServiceImpl implements CoinService{
             coin.setImage(jsonNode.get("image").get("large").asText());
 
 
-            JsonNode marketData = jsonNode.get("market data");
+            JsonNode marketData = jsonNode.get("market_data");
 // i have a qn where there all below set methods coming from api??
 
             coin.setCurrentPrice(marketData.get("current_price").get("usd").asDouble());
@@ -100,13 +100,11 @@ public class CoinServiceImpl implements CoinService{
             coin.setTotalVolume(marketData.get("total_volume").get("usd").asLong());
             coin.setHigh24h(marketData.get("high_24h").get("usd").asDouble());
             coin.setLow24h(marketData.get("low_24h").get("usd").asDouble());
-            coin.setPriceChange24h(marketData.get("price_change24_h").get("usd").asDouble());
-            coin.setPriceChangePercentage24h(marketData.get("price_change2_24h").get("usd").asDouble());
-
+            coin.setPriceChange24h(marketData.get("price_change_24h").asDouble());
+            coin.setPriceChangePercentage24h(marketData.get("price_change_percentage_24h").asDouble());
             coin.setMarketCapChange24h(marketData.get("market_cap_change_24h").asLong());
             coin.setMarketCapChangePercentage24h(marketData.get("market_cap_change_percentage_24h").asLong());
-
-            coin.setTotalSupply(marketData.get("total_supply").get("usd").asLong());
+            coin.setTotalSupply(marketData.get("total_supply").asLong());
             coinRepository.save(coin);
 
             return response.getBody();

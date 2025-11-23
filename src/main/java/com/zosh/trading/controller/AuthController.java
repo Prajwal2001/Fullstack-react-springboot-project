@@ -45,7 +45,7 @@ public class AuthController {
     public ResponseEntity<AuthResponse> register(@RequestBody User user) throws Exception {
 
 
-         User isEmailExist = userRepository.findByEmail(user.getEmail());
+        User isEmailExist = userRepository.findByEmail(user.getEmail());
 
         if (isEmailExist != null){
             throw new Exception("email already is already in use with another account");
@@ -62,7 +62,7 @@ public class AuthController {
         Authentication auth = new UsernamePasswordAuthenticationToken(
                 user.getEmail(),
                 user.getPassword()
-                );
+        );
 
         SecurityContextHolder.getContext().setAuthentication(auth);
 
@@ -121,7 +121,7 @@ public class AuthController {
 
             TwoFactorOTP oldTwoFactorOTP = twoFactorOtpService.findByUser(authUser.getId());
             if(oldTwoFactorOTP != null){
-                 twoFactorOtpService.deleteTwoFactorOtp(oldTwoFactorOTP);
+                twoFactorOtpService.deleteTwoFactorOtp(oldTwoFactorOTP);
             }
 
             TwoFactorOTP newTwoFActorOTP = twoFactorOtpService.createTwoFactorOtp(

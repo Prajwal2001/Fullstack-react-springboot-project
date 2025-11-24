@@ -19,22 +19,22 @@ public class JwtProvider {
 
     public static String generateToken(Authentication auth) {
 
-        Collection <? extends GrantedAuthority> authorities = auth.getAuthorities();
-        String roles = populateAuthorities (authorities);
+        Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+        String roles = populateAuthorities(authorities);
 
         Date expirationDate = new Date(new Date().getTime() + 86400000);
 
         return Jwts.builder()
-                .issuedAt(new Date()) .expiration(expirationDate)
+                .issuedAt(new Date()).expiration(expirationDate)
                 .claim("email", auth.getName())
                 .claim("authorities", roles)
                 .signWith(key).compact();
     }
 
-    public static String getEmailFromToken ( String token){
+    public static String getEmailFromToken(String token) {
         token = token.substring(7);
 
-        Claims claims = Jwts.parser().verifyWith((PublicKey) key).build().parseSignedClaims(token).getPayload();// 1:47:27
+        Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();// 1:47:27
 
         return String.valueOf(claims.get("email"));
 
@@ -42,12 +42,12 @@ public class JwtProvider {
 
     private static String populateAuthorities(Collection<? extends GrantedAuthority> authorities) {
 
-        Set<String> auth= new HashSet<>();
-        for( GrantedAuthority ga:authorities){
+        Set<String> auth = new HashSet<>();
+        for (GrantedAuthority ga : authorities) {
             auth.add(ga.getAuthority());
         }
 
-        return String.join (",",auth);
+        return String.join(",", auth);
 
     }
 }

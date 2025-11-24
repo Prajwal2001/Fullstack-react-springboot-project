@@ -1,4 +1,5 @@
 package com.zosh.trading.config;
+
 import org.springframework.lang.NonNull;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -29,19 +30,18 @@ public class JwtTokenValidator extends OncePerRequestFilter {
         String jwt = request.getHeader(JwtConstant.JWT_HEADER);
 
         // Bearer token validation
-        if (jwt != null ) {
+        if (jwt != null) {
             jwt = jwt.substring(7); // remove "Bearer " prefix
 
             try {
                 SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRETE_KEY.getBytes());
 
-
                 Claims claims = Jwts.parser()
-                        .verifyWith((PublicKey) key) // Use verifyWith() for Public Key
+                        .verifyWith(key)
                         .build()
-                        // Replace .parseClaimsJws(jwt) with .parseSignedClaims(jwt)
                         .parseSignedClaims(jwt)
-                        .getPayload(); // .getPayload() is used instead of .getBody() on the result
+                        .getPayload();
+
 
                 String email = String.valueOf(claims.get("email"));
                 String authorities = String.valueOf(claims.get("authorities"));

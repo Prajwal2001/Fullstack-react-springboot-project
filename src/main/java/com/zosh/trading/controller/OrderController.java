@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
@@ -29,10 +28,8 @@ public class OrderController {
     @Autowired
     private CoinService coinService;
 
-//    @Autowired
-//    private WalletTransactionService walletTransactionService;
-
-
+    // @Autowired
+    // private WalletTransactionService walletTransactionService;
 
     @PostMapping("/pay")
     public ResponseEntity<Order> payOrderPayment(
@@ -41,10 +38,8 @@ public class OrderController {
 
     ) throws Exception {
         User user = userSerivce.findUserProfileByJwt(jwt);
-        Coin coin =coinService.findById(req.getCoinId());
-
-
-        Order order = orderService.processOrder(coin,req.getQuantity(),req.getOrderType(),user);
+        Coin coin = coinService.findById(req.getCoinId());
+        Order order = orderService.processOrder(coin, req.getQuantity(), req.getOrderType(), user);
 
         return ResponseEntity.ok(order);
 
@@ -53,9 +48,7 @@ public class OrderController {
     @GetMapping("/{orderId}")
     public ResponseEntity<Order> getOrderById(
             @RequestHeader("Authorization") String jwtToken,
-            @PathVariable Long orderId
-    ) throws Exception {
-
+            @PathVariable Long orderId) throws Exception {
 
         User user = userSerivce.findUserProfileByJwt(jwtToken);
 
@@ -71,15 +64,12 @@ public class OrderController {
     public ResponseEntity<List<Order>> getAllOrdersForUser(
             @RequestHeader("Authorization") String jwt,
             @RequestParam(required = false) OrderType order_type,
-            @RequestParam(required = false) String asset_symbol
-    ) throws Exception {
-
+            @RequestParam(required = false) String asset_symbol) throws Exception {
 
         Long userId = userSerivce.findUserProfileByJwt(jwt).getId();
 
-        List<Order> userOrders = orderService.getAllOrdersOfUser(userId,order_type,asset_symbol);
+        List<Order> userOrders = orderService.getAllOrdersOfUser(userId, order_type, asset_symbol);
         return ResponseEntity.ok(userOrders);
     }
-
 
 }

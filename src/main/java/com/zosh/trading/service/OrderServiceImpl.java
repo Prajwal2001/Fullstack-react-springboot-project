@@ -33,7 +33,7 @@ public class OrderServiceImpl implements OrderService {
 
         double price = orderItem.getCoin().getCurrentPrice() * orderItem.getQuantity();
 
-        Order order = null;
+        Order order = new Order();
         order.setUser(user);
         order.setOrderItem(orderItem);
         order.setOrderType(orderType);
